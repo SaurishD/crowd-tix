@@ -31,9 +31,22 @@ contract CrowdTix {
         //Add deadline event.
     }
 
+    struct ShowDetails {
+        string showName;
+        Ticket[] tickets;
+        string[] ticketIds;
+        uint16 minimumRevenue;
+        address payable owner;
+        string showInfo;
+        string seatArrangement;
+    }
+
     address payable contractOwner;
     mapping(string => Show) showMapping;
     string[] listOfShows;
+
+    // uint dataCount = 0;
+    // string latestShow;
 
     //Functions
     constructor() {
@@ -44,6 +57,14 @@ contract CrowdTix {
     function getShowList() public view returns (string[] memory) {
         return listOfShows;
     }
+
+    // function getLatestShow() public view returns (string memory) {
+    //     return latestShow;
+    // }
+
+    // function getCount() public view returns (uint) {
+    //     return dataCount;
+    // }
 
     //Get show availability
     function getShowAvailability(
@@ -69,8 +90,24 @@ contract CrowdTix {
 
     function getShowInfo(
         string memory showName
-    ) public view returns (string memory) {
-        return showMapping[showName].showInfo;
+    ) public view returns (ShowDetails memory) {
+        Show storage _show = showMapping[showName];
+        ShowDetails memory showDetails;
+
+        showDetails.showName = _show.showName;
+        showDetails.minimumRevenue = _show.minimumRevenue;
+        showDetails.owner = _show.owner;
+        showDetails.showInfo = _show.showInfo;
+        showDetails.seatArrangement = _show.seatArrangement;
+        showDetails.ticketIds = _show.ticketIds;
+        showDetails.tickets = new Ticket[](_show.ticketIds.length);
+
+        // Convert ticketIds to tickets
+        for (uint256 i = 0; i < _show.ticketIds.length; i++) {
+            showDetails.tickets[i] = _show.tickets[_show.ticketIds[i]];
+        }
+
+        return showDetails;
     }
 
     //Host show.
@@ -92,11 +129,12 @@ contract CrowdTix {
         }
         newShow.owner = payable(msg.sender);
         newShow.showName = id;
-        // newShow.tickets = tickets;  check this out. Test this.
-
+        // // newShow.tickets = tickets;  check this out. Test this.
+        listOfShows.push(id);
         newShow.minimumRevenue = minimumRevenue;
         newShow.showInfo = showInfo;
         newShow.seatArrangement = seatArrangement;
+        // dataCount++;
     }
 
     //Book ticket.
@@ -111,9 +149,6 @@ contract CrowdTix {
         showMapping[showId].tickets[seatId].owner = msg.sender;
     }
 
-    //Transfert Ticket
-
-    //Verify Tickets
     function verify(
         string memory showId,
         string memory seatId

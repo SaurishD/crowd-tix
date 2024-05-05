@@ -1,5 +1,6 @@
-import { Show, Ticket } from '@/types/types';
+import { Show, Ticket, UserInputTickets } from '@/types/types';
 import React, { useState } from 'react';
+import { getShowList, hostShow } from './api/crowTixContractConnect';
 
 
 interface SideDrawerProps {
@@ -16,35 +17,25 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose, onSave }) => {
     const [showInfo, setShowInfo] = useState<string>('');
     const [seatArrangement, setSeatArrangement] = useState<string>('');
 
-    const handleSave = () => {
-        const tickets: { [key: string]: Ticket } = {};
+    const handleSave = async () => {
+        const tickets:  UserInputTickets[] = [];
         const ticketIds: string[] = [];
 
         for (let i = 1; i <= numberOfRows; i++) {
             for (let j = 1; j <= numberOfColumns; j++) {
                 const ticketId = `${String.fromCharCode(64 + i)}${j}`;
-                const ticket: Ticket = {
+                const ticket: UserInputTickets = {
                     id: ticketId,
-                    price: 0,
-                    owner: '',
-                    isReserved: false,
+                    price: 0
                 };
-                tickets[ticketId] = ticket;
+                tickets.push(ticket);
                 ticketIds.push(ticketId);
             }
         }
         console.log(tickets)
-        const newShow: Show = {
-            showName: showName,
-            tickets: tickets,
-            ticketIds: ticketIds,
-            minimumRevenue: minimumRevenue,
-            owner: '',
-            showInfo: showInfo,
-            seatArrangement: seatArrangement,
-        };
 
-        onSave(newShow);
+        console.log(await hostShow(showName,tickets,minimumRevenue,showInfo));
+        console.log(await getShowList());
         onClose();
     };
 

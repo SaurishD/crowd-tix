@@ -15,4 +15,19 @@ interface Show {
   seatArrangement: string;
 }
 
-export type { Show, Ticket };
+interface ShowDetails {
+  showName: string;
+  tickets: Ticket[];
+  ticketIds: string[];
+  minimumRevenue: number;
+  owner: string;
+  showInfo: string;
+  seatArrangement: string;
+}
+
+interface UserInputTickets {
+  id: string;
+  price: number;
+}
+
+export type { Show, Ticket, UserInputTickets, ShowDetails };

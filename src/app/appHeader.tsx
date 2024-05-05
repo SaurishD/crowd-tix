@@ -23,6 +23,7 @@ const AppHeader: React.FC<AppHeaderProps> = (props) => {
         color: 'white',
     };
 
+    
     const buttonStyle: React.CSSProperties = {
         backgroundColor: '#ffcc00',
         color: '#333',
@@ -37,7 +38,7 @@ const AppHeader: React.FC<AppHeaderProps> = (props) => {
     return (
         <>
         <div style={headerStyle}>
-            <Link href="/" style={iconStyle}><h1>CrowdTix</h1></Link>
+            <Link href="/" style={iconStyle}><h1>CTX</h1></Link>
             <>
             {onHostButtonClick ? (<button 
                 style={buttonStyle} 
@@ -47,6 +48,7 @@ const AppHeader: React.FC<AppHeaderProps> = (props) => {
             >
                 Host Show
             </button>) : <></>}
+            
             </>
         </div>
         </>
